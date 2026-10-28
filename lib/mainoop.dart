@@ -1,50 +1,94 @@
+// ignore_for_file: avoid_print, unused_import
+
+import 'dart:io';
+
+import 'task1.dart';
+import 'task2.dart';
+import 'task3.dart';
+import 'task4.dart';
+import 'task5.dart';
+
 void main() {
-  print('====================================');
-  print('          TASK 1: ENCAPSULATION      ');
-  print('====================================');
-  BankAccount myAccount = BankAccount('ACC00192837', 500);
-  print('Account Number: ${myAccount.accountNumber}');
-  print('Initial Balance: ${myAccount.balance}');
-  myAccount.deposit(150);
-  print('Current Balance: ${myAccount.balance}');
-  myAccount.withdraw(200);
-  print('Current Balance: ${myAccount.balance}');
-  myAccount.withdraw(1000);
-  print('Current Balance: ${myAccount.balance}\n');
+  // Task 1: Bank Account
+  print('--- Create Bank Account ---');
+  stdout.write('Enter Account Number: ');
+  String accountNumber = stdin.readLineSync() ?? 'Unknown';
 
-  print('====================================');
-  print('          TASK 2: INHERITANCE        ');
-  print('====================================');
-  Car myCar = Car('Toyota', 'Camry', 2022, 4);
-  myCar.displayCarDetails();
-  print('');
+  stdout.write('Enter PIN: ');
+  String pin = stdin.readLineSync() ?? '';
 
-  print('====================================');
-  print('          TASK 3: ABSTRACTION        ');
-  print('====================================');
-  PaymentMethod cardPayment = CreditCardPayment('4532819022341198');
-  cardPayment.pay(150);
-  PaymentMethod cashPayment = CashPayment();
-  cashPayment.pay(85);
-  print('');
-
-  print('====================================');
-  print('          TASK 4: POLYMORPHISM       ');
-  print('====================================');
-  List<NotificationService> notifications = [
-    EmailNotification('moamen@example.com', 'Welcome to our platform!'),
-    SmsNotification('+201012345678', 'Your OTP code is 4829.'),
-    PushNotification('device_token_abc123', 'New direct message received.'),
-  ];
-  for (var notification in notifications) {
-    notification.sendNotification();
+  if (pin != '1235') {
+    print('Error: Incorrect PIN! Access denied.');
+    return;
   }
-  print('');
 
-  print('====================================');
-  print('          TASK 5: SHOPPING CART      ');
-  print('====================================');
+  var myAccount = BankAccount(accountNumber);
+  print('Successfully logged in and account created!');
+
+  while (true) {
+    print('\n--- Main Menu ---');
+    print('1. Deposit');
+    print('2. Withdraw');
+    print('3. Check Balance');
+    print('4. Exit');
+    stdout.write('Choose an option (1-4): ');
+
+    String? choice = stdin.readLineSync();
+
+    if (choice == '1') {
+      stdout.write('Enter amount to deposit: ');
+      double amount = double.tryParse(stdin.readLineSync() ?? '0') ?? 0.0;
+      myAccount.deposit(amount);
+    } else if (choice == '2') {
+      stdout.write('Enter amount to withdraw: ');
+      double amount = double.tryParse(stdin.readLineSync() ?? '0') ?? 0.0;
+      myAccount.withdraw(amount);
+    } else if (choice == '3') {
+      print('Current Balance: ${myAccount.balance.toStringAsFixed(2)}');
+    } else if (choice == '4') {
+      print('Exiting...');
+      break;
+    } else {
+      print('Invalid choice, please try again.');
+    }
+    print(
+      '--------------------------------------------------------------------',
+    );
+  }
+  // Task 2: Employee
+  Developer dev = Developer('eng Mega', 10000000000000, 'Flutter');
+ // اقبض الي انا عاوزه بقا 🤣🤣
+ // 
+  Designer designer = Designer('darch alrhanan', 200, 'Figma');
+
+  dev.displayInfo();
+  print('-------------------');
+  designer.displayInfo();
+  // Task 3: Payment Method
+   // ياريت دا يكون المطلوب 
+  PaymentMethod paymentMethod = CreditCardPayment(
+    cardNumber: '51518791164174',
+    cardHolderName: 'mega beeh',
+    expiryDate: '2022-12-31',
+    cvv: 123,
+    otp: 4567,
+  );
+  paymentMethod.pay(100);
+  paymentMethod = CashPayment(01025047038);
+  paymentMethod.pay(50);
+  // Task 4: Notification Service
+  List<NotificationService> notifications = [
+    EmailNotification('moamen send you an email click for more info'),
+    SmsNotification('facebook cod is : 55875'),
+    PushNotification('update your app'),
+  ];
+
+  for (var notification in notifications) {
+    notification.sendNotification("");
+  }
+  // Task 5: Shopping Cart
   ShoppingCart cart = ShoppingCart();
+
   Product laptop = Electronics('Laptop', 1200);
   Product phone = Electronics('Smartphone', 800);
   Product jacket = Clothing('Winter Jacket', 150);
@@ -55,225 +99,12 @@ void main() {
   cart.addProduct(jacket);
   cart.addProduct(shirt);
 
-  print('--- Initial Shopping Cart ---');
+  print('--- Shopping Cart ---');
   cart.displayCart();
 
-  print('\nRemoving Smartphone...');
+  print('Removing Smartphone...');
   cart.removeProduct(phone);
 
-  print('\n--- Updated Shopping Cart ---');
+  print('--- Updated Shopping Cart ---');
   cart.displayCart();
-}
-
-// ==========================================
-// TASK 1 — ENCAPSULATION
-// ==========================================
-class BankAccount {
-  String _accountNumber;
-  int _balance;
-
-  BankAccount(this._accountNumber, int initialBalance)
-      : _balance = initialBalance >= 0 ? initialBalance : 0;
-
-  int get balance => _balance;
-  String get accountNumber => _accountNumber;
-
-  void deposit(int amount) {
-    if (amount > 0) {
-      _balance += amount;
-      print('Successfully deposited $amount');
-    } else {
-      print('Deposit amount must be greater than zero.');
-    }
-  }
-
-  bool withdraw(int amount) {
-    if (amount <= 0) {
-      print('Withdrawal amount must be greater than zero.');
-      return false;
-    }
-    if (amount > _balance) {
-      print('Withdrawal failed: Insufficient funds. Current balance is $_balance');
-      return false;
-    }
-    _balance -= amount;
-    print('Successfully withdrew $amount');
-    return true;
-  }
-}
-
-// ==========================================
-// TASK 2 — INHERITANCE
-// ==========================================
-class Vehicle {
-  String brand;
-  String model;
-  int year;
-
-  Vehicle(this.brand, this.model, this.year);
-
-  void displayDetails() {
-    print('Brand: $brand, Model: $model, Year: $year');
-  }
-}
-
-class Car extends Vehicle {
-  int numberOfDoors;
-
-  Car(String brand, String model, int year, this.numberOfDoors)
-      : super(brand, model, year);
-
-  void displayCarDetails() {
-    displayDetails();
-    print('Number of Doors: $numberOfDoors');
-  }
-}
-
-// ==========================================
-// TASK 3 — ABSTRACTION
-// ==========================================
-abstract class PaymentMethod {
-  void pay(int amount);
-}
-
-class CreditCardPayment extends PaymentMethod {
-  String cardNumber;
-
-  CreditCardPayment(this.cardNumber);
-
-  @override
-  void pay(int amount) {
-    if (amount <= 0) {
-      print('Invalid payment amount.');
-      return;
-    }
-    String maskedCard = cardNumber.length >= 4
-        ? '**** **** **** ${cardNumber.substring(cardNumber.length - 4)}'
-        : cardNumber;
-    print('Processing payment of $amount using Credit Card ($maskedCard)');
-  }
-}
-
-class CashPayment extends PaymentMethod {
-  @override
-  void pay(int amount) {
-    if (amount <= 0) {
-      print('Invalid payment amount.');
-      return;
-    }
-    print('Received cash payment of $amount');
-  }
-}
-
-// ==========================================
-// TASK 4 — POLYMORPHISM
-// ==========================================
-class NotificationService {
-  void sendNotification() {
-    print('Sending notification...');
-  }
-}
-
-class EmailNotification extends NotificationService {
-  String email;
-  String message;
-
-  EmailNotification(this.email, this.message);
-
-  @override
-  void sendNotification() {
-    print('Sending Email to $email: $message');
-  }
-}
-
-class SmsNotification extends NotificationService {
-  String phoneNumber;
-  String message;
-
-  SmsNotification(this.phoneNumber, this.message);
-
-  @override
-  void sendNotification() {
-    print('Sending SMS to $phoneNumber: $message');
-  }
-}
-
-class PushNotification extends NotificationService {
-  String deviceToken;
-  String message;
-
-  PushNotification(this.deviceToken, this.message);
-
-  @override
-  void sendNotification() {
-    print('Sending Push Notification to device [$deviceToken]: $message');
-  }
-}
-
-// ==========================================
-// TASK 5 — SHOPPING CART
-// ==========================================
-abstract class Product {
-  String name;
-  int price;
-
-  Product(this.name, this.price);
-
-  int calculateDiscount();
-
-  int get finalPrice => price - calculateDiscount();
-}
-
-class Electronics extends Product {
-  Electronics(String name, int price) : super(name, price);
-
-  @override
-  int calculateDiscount() {
-    return (price * 0.10).toInt();
-  }
-}
-
-class Clothing extends Product {
-  Clothing(String name, int price) : super(name, price);
-
-  @override
-  int calculateDiscount() {
-    return (price * 0.20).toInt();
-  }
-}
-
-class ShoppingCart {
-  List<Product> _products = [];
-
-  void addProduct(Product product) {
-    _products.add(product);
-  }
-
-  bool removeProduct(Product product) {
-    return _products.remove(product);
-  }
-
-  int get totalPrice {
-    int total = 0;
-    for (var product in _products) {
-      total += product.finalPrice;
-    }
-    return total;
-  }
-
-  void displayCart() {
-    if (_products.isEmpty) {
-      print('The cart is empty.');
-      return;
-    }
-
-    for (var product in _products) {
-      int discount = product.calculateDiscount();
-      int netPrice = product.finalPrice;
-      print(
-        '${product.name} - Original: ${product.price} | Discount: $discount | Final: $netPrice',
-      );
-    }
-    print('Total Price: $totalPrice');
-  }
 }
